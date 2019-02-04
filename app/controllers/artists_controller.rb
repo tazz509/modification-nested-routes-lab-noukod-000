@@ -17,23 +17,31 @@ class ArtistsController < ApplicationController
     if @artist.save
       redirect_to @artist
     else
-      render :new
+      render :new, alert: "Fail to create"
     end
   end
 
   def edit
-    @artist = Artist.find(params[:id])
+    if params[:id] && !Artist.exists?(params[:id])
+      redirect_to artists_path, alert: "Artist not found"
+    else
+      @artist = Artist.find(params[:id])
+    end
   end
 
   def update
-    @artist = Artist.find(params[:id])
-
-    @artist.update(artist_params)
-
-    if @artist.save
-      redirect_to @artist
+    if params[:id] && !Artist.exists?(params[:id])
+      redirect_to artists_path, alert: "Artist not found"
     else
-      render :edit
+      @artist = Artist.find(params[:id])
+
+      @artist.update(artist_params)
+
+      if @artist.save
+        redirect_to @artist
+      else
+        render :edit
+      end
     end
   end
 
